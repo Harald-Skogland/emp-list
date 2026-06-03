@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>emp-list — Dialogue</title>
+  <script>
+    // Prototype convenience: on browser refresh, always return to the Employees view (index.html).
+    // Internal navigation via the Dialogue tab click is preserved (type === 'navigate').
+    const nav = performance.getEntriesByType('navigation')[0];
+    if (nav && nav.type === 'reload') {
+      window.location.replace('index.html');
+    }
+
+    // Apply saved theme before render to avoid flash of wrong theme.
+    (function () {
+      var saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/shell.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+</head>
+<body>
+  <div class="device">
+    <div class="screen">
+
+      <!-- Top safe area: iOS status bar -->
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-right">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <!-- App area: header / sub-tabs / content / bottom tab-bar -->
+      <main class="app">
+
+        <!-- top-nav (Gaia Mobile, story-1 light, no back button, 2 trailing icons) -->
+        <header class="top-nav" data-rn="View">
+          <h1 class="top-nav-title" data-rn="Text">HRM</h1>
+          <div class="top-nav-actions" data-rn="View">
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Information">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </button>
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- sub-nav: segment-control + trailing icons -->
+        <nav class="sub-nav" data-rn="View" aria-label="Section">
+          <div class="segment-control" data-rn="View" role="tablist">
+            <button class="segment-control-item is-selected" data-rn="Pressable" type="button" role="tab" aria-selected="true">
+              <span data-rn="Text">Dialogue</span>
+            </button>
+            <button class="segment-control-item" data-rn="Pressable" type="button" role="tab" aria-selected="false" onclick="location.href='index.html'">
+              <span data-rn="Text">Employees</span>
+            </button>
+          </div>
+          <div class="sub-nav-actions" data-rn="View">
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </button>
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="More options">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+        <div class="content" data-rn="ScrollView">
+          <p style="text-align: center; padding: 32px 16px; color: var(--ga-color-text-body-secondary); font-family: var(--ga-font-family-primary);">Dialogue view (placeholder)</p>
+        </div>
+      </main>
+
+      <!-- bottom-nav (Gaia Mobile, manager-current / integration=hrm / elements=4)
+           Floats above the content area; sized to content; centered above home indicator. -->
+      <nav class="bottom-nav" data-rn="View" role="tablist" aria-label="App navigation">
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">Approval</span>
+          </button>
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2" />
+                <line x1="2" x2="22" y1="10" y2="10" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">Autopay</span>
+          </button>
+          <button class="bottom-nav-item is-selected" data-rn="Pressable" type="button" role="tab" aria-selected="true">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" x2="16" y1="2" y2="6" />
+                <line x1="8" x2="8" y1="2" y2="6" />
+                <line x1="3" x2="21" y1="10" y2="10" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">HRM</span>
+          </button>
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                <polyline points="16 7 22 7 22 13" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">OSR</span>
+          </button>
+      </nav>
+
+      <!-- Bottom safe area: home indicator -->
+      <div class="home-indicator">
+        <div class="home-indicator-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Light/dark mode toggle — prototype-only chrome, lives in the empty space to the right of the phone. -->
+  <button class="light-switch" type="button" aria-label="Toggle light/dark mode" onclick="toggleTheme()">
+    <span class="light-switch-thumb" aria-hidden="true">
+      <svg class="light-switch-icon light-switch-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2" />
+        <path d="M12 20v2" />
+        <path d="m4.93 4.93 1.41 1.41" />
+        <path d="m17.66 17.66 1.41 1.41" />
+        <path d="M2 12h2" />
+        <path d="M20 12h2" />
+        <path d="m6.34 17.66-1.41 1.41" />
+        <path d="m19.07 4.93-1.41 1.41" />
+      </svg>
+      <svg class="light-switch-icon light-switch-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    </span>
+  </button>
+</body>
+</html>

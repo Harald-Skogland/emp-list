@@ -1,0 +1,148 @@
+/* Gaia design tokens — sourced from gaia-ds. Same values for web and mobile. */
+
+:root {
+  /* Colors — text */
+  --ga-color-text-body: #133445;
+  --ga-color-text-body-secondary: #2a6480;
+  --ga-color-text-headings: #133445;
+  --ga-color-text-action: #1f4e66;
+  --ga-color-text-action-hover: #133445;
+  --ga-color-text-on-action: #fcf0e7;
+  --ga-color-text-on-disabled: #6f7687;
+  --ga-color-text-disabled: #b9b9b9;
+  --ga-color-text-disable-selected: #6f7687;
+
+  /* Colors — icon (separate semantic family from text) */
+  --ga-color-icon-primary: #133445;
+  --ga-color-icon-action: #1f4e66;
+  --ga-color-icon-action-hover: #377ea0;
+  --ga-color-icon-success: #448548;
+  --ga-color-icon-error: #cc453e;
+  --ga-color-icon-on-primary: #ffffff;
+  --ga-color-icon-on-disabled: #6f7687;
+
+  /* Colors — border */
+  --ga-color-border-action: #1f4e66;
+  --ga-color-border-action-hover: #377ea0;
+  --ga-color-border-primary: #6f7687;
+  --ga-color-border-tertiary: #cccfd7;            /* same hex as border-disabled; distinct semantic */
+  --ga-color-border-disabled: #cccfd7;
+  --ga-color-border-focus: #1f4e66;
+  --ga-color-border-alert-information: #366af6;
+
+  /* Colors — surface */
+  --ga-color-surface-primary: #ffffff;
+  --ga-color-surface-action: #1f4e66;
+  --ga-color-surface-action-hover: #133445;
+  --ga-color-surface-action-hover-2: #fae0ce;
+  --ga-color-surface-page: #f2f3f5;
+  --ga-color-surface-disabled: #e2e4e9;
+  --ga-color-surface-disable-selected: #6f7687;
+  --ga-color-surface-alert-information: #edf4fe;
+
+  /* Colors — primary (brand) */
+  --ga-color-primary-default: #1f4e66;
+  --ga-color-primary-90: #133445;
+
+  /* Colors — utility accents */
+  --ga-color-utility-grey-accent: #f2f2f2;
+  --ga-color-utility-lime-accent: #edf6dd;
+  --ga-color-utility-teal-accent: #ecf5f4;
+  --ga-color-utility-indigo-accent: #f0f2fe;
+  --ga-color-utility-blue-accent: #edf4fe;
+  --ga-color-utility-blue: #93bbf9;
+
+  /* Colors — raw */
+  --ga-color-white: #ffffff;
+  --ga-color-black: #000000;
+  --ga-color-purple-80: #591ab5;
+
+  /* Misc */
+  --ga-miscellaneous-skeleton-element: #f2f3f5;
+
+  /* Typography — Gaia Mobile type ramp (see gaia-ds-mobile skill).
+     Note: md line-height is 20px on mobile (vs 24px on web Gaia). */
+  --ga-font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --ga-font-weight-normal: 400;
+  --ga-font-weight-medium: 500;
+  --ga-font-weight-semibold: 600;
+
+  --ga-text-xs-size: 11px;          /* Helper */
+  --ga-text-xs-lineheight: 16px;
+  --ga-text-xs-letterspacing: 0.08px;
+
+  --ga-text-sm-size: 12px;          /* Caption */
+  --ga-text-sm-lineheight: 20px;
+  --ga-text-sm-letterspacing: 0;
+
+  --ga-text-md-size: 14px;          /* Body */
+  --ga-text-md-lineheight: 20px;
+  --ga-text-md-letterspacing: -0.096px;
+
+  --ga-text-lg-size: 16px;          /* Heading */
+  --ga-text-lg-lineheight: 24px;
+  --ga-text-lg-letterspacing: -0.176px;
+
+  --ga-text-xl-size: 20px;          /* Title */
+  --ga-text-xl-lineheight: 32px;
+  --ga-text-xl-letterspacing: -0.272px;
+
+  --ga-text-2xl-size: 24px;         /* Headline */
+  --ga-text-2xl-lineheight: 36px;
+  --ga-text-2xl-letterspacing: -0.3px;
+
+  --ga-text-3xl-size: 36px;         /* Display */
+  --ga-text-3xl-lineheight: 56px;
+  --ga-text-3xl-letterspacing: -0.35px;
+
+  /* Spacing */
+  --ga-size-spacing-00: 0px;
+  --ga-size-spacing-01: 2px;
+  --ga-size-spacing-02: 4px;
+  --ga-size-spacing-03: 8px;
+  --ga-size-spacing-04: 12px;
+  --ga-size-spacing-05: 16px;
+  --ga-size-spacing-06: 24px;
+
+  /* Shape */
+  --ga-radius-default: 4px;
+  --ga-radius-round: 9999px;
+  --ga-border-width-sm: 1px;
+  --ga-border-width-md: 2px;
+
+  /* Prototype-only: web page background outside the phone frame */
+  --prototype-page-bg: #e6e8ec;
+}
+
+/* ===== Dark theme (freestyle — placeholder until real Gaia dark spec arrives).
+   Activated via `<html data-theme="dark">`. Light-switch widget toggles it. ===== */
+:root[data-theme="dark"] {
+  /* Text */
+  --ga-color-text-body: #fcf0e7;
+  --ga-color-text-body-secondary: #8aabc1;
+  --ga-color-text-headings: #fcf0e7;
+  --ga-color-text-action: #7eb8d0;
+  --ga-color-text-action-hover: #fcf0e7;
+  --ga-color-text-on-action: #0e1f2b;
+  --ga-color-text-disabled: #5a6470;
+  --ga-color-text-disable-selected: #8895a6;
+
+  /* Borders */
+  --ga-color-border-action: #7eb8d0;
+  --ga-color-border-action-hover: #a8d0e0;
+  --ga-color-border-primary: #5a6470;
+  --ga-color-border-disabled: #2a3540;
+  --ga-color-border-focus: #7eb8d0;
+
+  /* Surfaces */
+  --ga-color-surface-primary: #1f3a4f;
+  --ga-color-surface-action: #7eb8d0;
+  --ga-color-surface-action-hover: #fcf0e7;
+  --ga-color-surface-action-hover-2: #3a5267;
+  --ga-color-surface-page: #0e1f2b;
+  --ga-color-surface-disabled: #2a4254;
+  --ga-color-surface-disable-selected: #5a6470;
+
+  /* Prototype web page bg darkens too */
+  --prototype-page-bg: #0a0e14;
+}

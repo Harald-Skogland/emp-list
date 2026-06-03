@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>emp-list — Employees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/shell.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+  <script>
+    // Apply saved theme before render to avoid flash of wrong theme.
+    (function () {
+      var saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+  <script>
+    // Fjord Consulting Group — 70 employees.
+    // data-team values:
+    //   "team"       (10)  — also count as department (team is a subset of department)
+    //   "department" (15)  — in my department but not my team
+    //   "other"      (45)  — neither my team nor my department
+    // Filter mapping (mutually exclusive, both can be off):
+    //   "team"        → rows where data-team === "team"
+    //   "department"  → rows where data-team is "team" OR "department"
+    //   (none active) → show all rows
+    var FJORD_EMPLOYEES = (function () {
+      var firsts = [
+        'Pia', 'Silje', 'Erik', 'Anna', 'Magnus', 'Ingrid', 'Lars', 'Sofie', 'Henrik',
+        'Ida', 'Ola', 'Kari', 'Liv', 'Bjørn', 'Astrid', 'Knut', 'Tone', 'Stein',
+        'Hilde', 'Jan', 'Marit', 'Per', 'Inger', 'Gunnar', 'Nina', 'Olav', 'Eva',
+        'Frode', 'Vibeke', 'Tor', 'Lise', 'Espen', 'Geir', 'Mette', 'Atle', 'Solveig',
+        'Karoline', 'Trygve', 'Birgitte', 'Håkon', 'Camilla', 'Asbjørn', 'Maja',
+        'Sindre', 'Jorunn', 'Vegard', 'Karina', 'Eskil', 'Ingvild', 'Tobias',
+        'Heidi', 'Andreas', 'Ragnhild', 'Sebastian', 'Helene', 'Joakim', 'Marie',
+        'Kristian', 'Ingeborg', 'Mikkel', 'Sara', 'Tuva', 'Sander', 'Linnea',
+        'Maria', 'Nicolai', 'Frida', 'Aksel', 'Hannah', 'Vetle'
+      ];
+      var lasts = [
+        'Johansen', 'Moen', 'Hansen', 'Larsen', 'Berg', 'Haugen', 'Kristiansen',
+        'Olsen', 'Pedersen', 'Nielsen', 'Andersen', 'Jensen', 'Karlsen', 'Lund',
+        'Solberg', 'Bakken', 'Eriksen', 'Dahl', 'Halvorsen', 'Strand', 'Iversen',
+        'Sørensen', 'Knutsen', 'Nilsen', 'Mortensen', 'Aas', 'Holm', 'Lie',
+        'Nygård', 'Tangen', 'Eide', 'Vik', 'Bakke', 'Næss', 'Lien'
+      ];
+      var roles = [
+        'Senior Consultant', 'Business Analyst', 'IT Lead', 'Software Engineer',
+        'Product Designer', 'Project Manager', 'Account Manager', 'HR Specialist',
+        'Finance Lead', 'Operations Manager', 'Marketing Lead', 'Sales Manager',
+        'Customer Success', 'Tech Lead', 'QA Engineer', 'Solutions Architect',
+        'Engagement Manager', 'Junior Consultant', 'Strategy Lead', 'Data Analyst'
+      ];
+      // 10 team + 15 department + 45 other = 70 total
+      var groups = []
+        .concat(new Array(10).fill('team'))
+        .concat(new Array(15).fill('department'))
+        .concat(new Array(45).fill('other'));
+      var list = groups.map(function (group, i) {
+        var first = firsts[i % firsts.length];
+        var last = lasts[(i * 3 + 1) % lasts.length];
+        var role = roles[(i * 7 + 2) % roles.length];
+        // Every 7th employee gets a photo avatar; the rest use initials.
+        var useImage = i % 7 === 0;
+        return {
+          id: 'fjord-' + i,
+          first: first,
+          last: last,
+          role: role,
+          team: group,
+          avatar: useImage ? 'https://i.pravatar.cc/48?u=' + first.toLowerCase() + '-' + last.toLowerCase() + '-' + i : null
+        };
+      });
+      // Sort alphabetically by last name, then first name. Norwegian locale so
+      // æ/ø/å sort in the expected order after z.
+      list.sort(function (a, b) {
+        var c = a.last.localeCompare(b.last, 'nb');
+        return c !== 0 ? c : a.first.localeCompare(b.first, 'nb');
+      });
+      return list;
+    })();
+
+    function renderFjordRows() {
+      var host = document.getElementById('fjord-list');
+      if (!host) return;
+      var html = FJORD_EMPLOYEES.map(function (e) {
+        var initials = (e.first.charAt(0) + e.last.charAt(0)).toUpperCase();
+        var avatar = e.avatar
+          ? '<img class="list-item-avatar-image" data-rn="Image" src="' + e.avatar + '" alt="" />'
+          : '<span class="list-item-avatar-initials" data-rn="Text">' + initials + '</span>';
+        return ''
+          + '<button class="dottie-list-item" data-rn="Pressable" type="button" data-team="' + e.team + '">'
+          +   '<span class="list-item-left" data-rn="View">'
+          +     '<span class="list-item-avatar" data-rn="View" aria-hidden="true">' + avatar + '</span>'
+          +     '<span class="list-item-text" data-rn="View">'
+          +       '<span class="list-item-primary" data-rn="Text">' + e.first + ' ' + e.last + '</span>'
+          +       '<span class="list-item-secondary" data-rn="Text">' + e.role + '</span>'
+          +     '</span>'
+          +   '</span>'
+          + '</button>';
+      }).join('');
+      host.innerHTML = html;
+    }
+
+    // Quick-filter behavior — mutually-exclusive pair with deselect.
+    // Clicking an inactive chip activates it (deactivates the other);
+    // clicking an active chip turns it off → "show all employees".
+    function applyFilter(active) {
+      var rows = document.querySelectorAll('#fjord-list .dottie-list-item');
+      rows.forEach(function (r) {
+        var team = r.getAttribute('data-team');
+        var show;
+        if (!active) {
+          show = true;
+        } else if (active === 'team') {
+          show = team === 'team';
+        } else if (active === 'department') {
+          show = team === 'team' || team === 'department';
+        } else {
+          show = true;
+        }
+        r.style.display = show ? '' : 'none';
+      });
+    }
+
+    function wireQuickFilters() {
+      var chips = document.querySelectorAll('.quick-filter-row .quick-filter');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var wasActive = chip.classList.contains('is-active');
+          chips.forEach(function (c) {
+            c.classList.remove('is-active');
+            c.setAttribute('aria-pressed', 'false');
+          });
+          if (!wasActive) {
+            chip.classList.add('is-active');
+            chip.setAttribute('aria-pressed', 'true');
+            applyFilter(chip.getAttribute('data-filter'));
+          } else {
+            applyFilter(null);
+          }
+        });
+      });
+    }
+
+    // Company menu — opens from the More-options icon. Each row is a
+    // menuitemcheckbox toggling the corresponding .list-section visibility.
+    function wireCompanyMenu() {
+      var btn = document.getElementById('more-options-btn');
+      var menu = document.getElementById('company-menu');
+      if (!btn || !menu) return;
+
+      function setOpen(open) {
+        menu.hidden = !open;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(menu.hidden);
+      });
+
+      // Click-outside dismiss.
+      document.addEventListener('click', function (e) {
+        if (menu.hidden) return;
+        if (!menu.contains(e.target) && e.target !== btn) setOpen(false);
+      });
+
+      menu.querySelectorAll('.menu-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var company = item.getAttribute('data-company');
+          var checked = item.getAttribute('aria-checked') !== 'true';
+          item.setAttribute('aria-checked', checked ? 'true' : 'false');
+          item.querySelector('.checkbox').classList.toggle('is-checked', checked);
+          var section = document.querySelector('.list-section[data-company="' + company + '"]');
+          if (section) section.style.display = checked ? '' : 'none';
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderFjordRows();
+      wireQuickFilters();
+      applyFilter(null);
+      wireCompanyMenu();
+    });
+  </script>
+</head>
+<body>
+  <div class="device">
+    <div class="screen">
+
+      <!-- Top safe area: iOS status bar -->
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-right">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <!-- App area: header / sub-tabs / content / bottom tab-bar -->
+      <main class="app">
+
+        <!-- top-nav (Gaia Mobile, story-1 light, no back button, 2 trailing icons) -->
+        <header class="top-nav" data-rn="View">
+          <h1 class="top-nav-title" data-rn="Text">HRM</h1>
+          <div class="top-nav-actions" data-rn="View">
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Information">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </button>
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- sub-nav: segment-control + trailing icons (ad-hoc wrapper, not a g-m component) -->
+        <nav class="sub-nav" data-rn="View" aria-label="Section">
+          <div class="segment-control" data-rn="View" role="tablist">
+            <button class="segment-control-item" data-rn="Pressable" type="button" role="tab" aria-selected="false" onclick="location.href='dialogue.html'">
+              <span data-rn="Text">Dialogue</span>
+            </button>
+            <button class="segment-control-item is-selected" data-rn="Pressable" type="button" role="tab" aria-selected="true">
+              <span data-rn="Text">Employees</span>
+            </button>
+          </div>
+          <div class="sub-nav-actions" data-rn="View">
+            <button class="button-icon" data-rn="Pressable" type="button" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </button>
+            <div class="menu-wrapper" data-rn="View">
+              <button class="button-icon" id="more-options-btn" data-rn="Pressable" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="1" />
+                  <circle cx="12" cy="5" r="1" />
+                  <circle cx="12" cy="19" r="1" />
+                </svg>
+              </button>
+              <div class="menu" id="company-menu" data-rn="View" role="menu" aria-label="Visible companies" hidden>
+                <button class="menu-item" data-rn="Pressable" type="button" role="menuitemcheckbox" aria-checked="true" data-company="nordic">
+                  <span class="checkbox is-checked" data-rn="View" aria-hidden="true">
+                    <svg class="checkbox-icon" data-rn="Icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </span>
+                  <span class="menu-item-label" data-rn="Text">Nordic Solutions AS</span>
+                </button>
+                <button class="menu-item" data-rn="Pressable" type="button" role="menuitemcheckbox" aria-checked="true" data-company="fjord">
+                  <span class="checkbox is-checked" data-rn="View" aria-hidden="true">
+                    <svg class="checkbox-icon" data-rn="Icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </span>
+                  <span class="menu-item-label" data-rn="Text">Fjord Consulting Group</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="content" data-rn="ScrollView">
+
+          <section class="list-section" data-rn="View" data-company="nordic">
+            <h2 class="list-section-header" data-rn="Text">Nordic Solutions AS</h2>
+            <div class="empman-list" data-rn="View">
+              <button class="empman-list-item" data-rn="Pressable" type="button">
+                <span class="list-item-left" data-rn="View">
+                  <span class="list-item-avatar" data-rn="View" aria-hidden="true">
+                    <span class="list-item-avatar-initials" data-rn="Text">AL</span>
+                  </span>
+                  <span class="list-item-text" data-rn="View">
+                    <span class="list-item-primary" data-rn="Text">Anna Larsen</span>
+                    <span class="list-item-secondary" data-rn="Text">HR Manager</span>
+                  </span>
+                </span>
+              </button>
+              <button class="empman-list-item" data-rn="Pressable" type="button">
+                <span class="list-item-left" data-rn="View">
+                  <span class="list-item-avatar" data-rn="View" aria-hidden="true">
+                    <span class="list-item-avatar-initials" data-rn="Text">MB</span>
+                  </span>
+                  <span class="list-item-text" data-rn="View">
+                    <span class="list-item-primary" data-rn="Text">Magnus Berg</span>
+                    <span class="list-item-secondary" data-rn="Text">Sales Director</span>
+                  </span>
+                </span>
+              </button>
+              <button class="empman-list-item" data-rn="Pressable" type="button">
+                <span class="list-item-left" data-rn="View">
+                  <span class="list-item-avatar" data-rn="View" aria-hidden="true">
+                    <span class="list-item-avatar-initials" data-rn="Text">IH</span>
+                  </span>
+                  <span class="list-item-text" data-rn="View">
+                    <span class="list-item-primary" data-rn="Text">Ingrid Haugen</span>
+                    <span class="list-item-secondary" data-rn="Text">Lead Designer</span>
+                  </span>
+                </span>
+              </button>
+              <button class="empman-list-item" data-rn="Pressable" type="button">
+                <span class="list-item-left" data-rn="View">
+                  <span class="list-item-avatar" data-rn="View" aria-hidden="true">
+                    <span class="list-item-avatar-initials" data-rn="Text">LK</span>
+                  </span>
+                  <span class="list-item-text" data-rn="View">
+                    <span class="list-item-primary" data-rn="Text">Lars Kristiansen</span>
+                    <span class="list-item-secondary" data-rn="Text">Engineering Manager</span>
+                  </span>
+                </span>
+              </button>
+            </div>
+          </section>
+
+          <section class="list-section" data-rn="View" data-company="fjord">
+            <h2 class="list-section-header" data-rn="Text">Fjord Consulting Group</h2>
+
+            <!-- quick-filter row (Gaia Mobile Figma node 3090:8440).
+                 Two pills, mutually-exclusive with deselect: clicking the active
+                 pill clears it. No filter active = show all employees. -->
+            <div class="quick-filter-row" data-rn="View" role="group" aria-label="Filter employees">
+              <span class="quick-filter-label" data-rn="Text">Filter</span>
+              <button class="quick-filter" data-rn="Pressable" type="button" aria-pressed="false" data-filter="team">
+                <span class="quick-filter-left" data-rn="View">
+                  <svg class="quick-filter-icon" data-rn="Icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span data-rn="Text">My team</span>
+                </span>
+              </button>
+              <button class="quick-filter" data-rn="Pressable" type="button" aria-pressed="false" data-filter="department">
+                <span class="quick-filter-left" data-rn="View">
+                  <svg class="quick-filter-icon" data-rn="Icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span data-rn="Text">My department</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Rows are rendered into here by JS from the employees data array
+                 in the script block at the bottom of <body>. Mirrors how an RN
+                 FlatList would consume a data array. -->
+            <div class="dottie-list" data-rn="View" id="fjord-list"></div>
+          </section>
+
+        </div>
+      </main>
+
+      <!-- bottom-nav (Gaia Mobile, manager-current / integration=hrm / elements=4)
+           Floats above the content area; sized to content; centered above home indicator. -->
+      <nav class="bottom-nav" data-rn="View" role="tablist" aria-label="App navigation">
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">Approval</span>
+          </button>
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2" />
+                <line x1="2" x2="22" y1="10" y2="10" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">Autopay</span>
+          </button>
+          <button class="bottom-nav-item is-selected" data-rn="Pressable" type="button" role="tab" aria-selected="true">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" x2="16" y1="2" y2="6" />
+                <line x1="8" x2="8" y1="2" y2="6" />
+                <line x1="3" x2="21" y1="10" y2="10" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">HRM</span>
+          </button>
+          <button class="bottom-nav-item" data-rn="Pressable" type="button" role="tab" aria-selected="false">
+            <span class="bottom-nav-icon" data-rn="View" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                <polyline points="16 7 22 7 22 13" />
+              </svg>
+            </span>
+            <span class="bottom-nav-label" data-rn="Text">OSR</span>
+          </button>
+      </nav>
+
+      <!-- Bottom safe area: home indicator -->
+      <div class="home-indicator">
+        <div class="home-indicator-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Light/dark mode toggle — prototype-only chrome, lives in the empty space to the right of the phone. -->
+  <button class="light-switch" type="button" aria-label="Toggle light/dark mode" onclick="toggleTheme()">
+    <span class="light-switch-thumb" aria-hidden="true">
+      <svg class="light-switch-icon light-switch-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2" />
+        <path d="M12 20v2" />
+        <path d="m4.93 4.93 1.41 1.41" />
+        <path d="m17.66 17.66 1.41 1.41" />
+        <path d="M2 12h2" />
+        <path d="M20 12h2" />
+        <path d="m6.34 17.66-1.41 1.41" />
+        <path d="m19.07 4.93-1.41 1.41" />
+      </svg>
+      <svg class="light-switch-icon light-switch-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    </span>
+  </button>
+</body>
+</html>

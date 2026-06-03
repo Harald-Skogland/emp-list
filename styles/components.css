@@ -1,0 +1,600 @@
+/* Gaia Mobile component styles — reusable across screens.
+   Visual rules from the gaia-ds-mobile Figma spec. Tokens from gaia-ds. */
+
+/* ===== top-nav =====
+   Gaia Mobile Figma node 2006:14397 ("top-nav" symbol).
+   Story-1 (primary row): optional leading back button + title + trailing icons.
+   This prototype uses the no-back-button variant with 2 trailing icons. */
+
+.top-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 var(--ga-size-spacing-05); /* 16px L+R when no back button */
+  background: var(--ga-color-surface-primary);
+  border-bottom: var(--ga-border-width-sm) solid var(--ga-color-border-disabled);
+}
+
+/* Divider rule: the bottom-most nav row carries the border.
+   If a sub-nav follows the top-nav, the top-nav loses its border. */
+.top-nav:has(+ .sub-nav) {
+  border-bottom: none;
+}
+
+.top-nav-title {
+  margin: 0;
+  padding: 0 var(--ga-size-spacing-02); /* 4px — matches Header component padding-x */
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-2xl-size);            /* 24px — "heavy" variant */
+  line-height: var(--ga-text-2xl-lineheight);    /* 36px */
+  font-weight: var(--ga-font-weight-semibold);   /* 600 */
+  letter-spacing: -0.3px;
+  color: var(--ga-color-text-body);
+}
+
+.top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-02); /* 4px between trailing icons */
+}
+
+/* ===== button-icon (Gaia Mobile, 44x44 touch target) ===== */
+
+.button-icon {
+  width: 44px;
+  height: 44px;
+  padding: var(--ga-size-spacing-03); /* 8px — gives 28px clear icon zone */
+  border: none;
+  background: transparent;
+  border-radius: var(--ga-radius-default);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ga-color-text-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button-icon svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Pressed state. Per gaia-ds-mobile interaction model, :hover on desktop is
+   mapped to RN's `pressed` state so reviewers preview touch feedback without
+   holding click. Visual mirrors the gaia-ds web button-icon "secondary" hover
+   styling — confirm whether the mobile spec defines a different press style.
+   When the button is a menu trigger with its menu open (aria-expanded=true),
+   it stays in this same active styling so the trigger reflects menu state. */
+.button-icon:hover,
+.button-icon:active,
+.button-icon[aria-haspopup="true"][aria-expanded="true"] {
+  background: var(--ga-color-surface-action-hover-2);
+  color: var(--ga-color-text-action-hover);
+}
+
+.button-icon:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -3px;
+}
+
+.button-icon:disabled {
+  background: var(--ga-color-surface-page);
+  color: var(--ga-color-text-disabled);
+}
+
+/* ===== sub-nav =====
+   Ad-hoc wrapper row for secondary navigation (e.g. segment-control + actions).
+   Not a documented Gaia Mobile component — formed per emp-list layout need. */
+
+.sub-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ga-size-spacing-04); /* 12px between left and right groups */
+  height: 56px;
+  padding: 0 var(--ga-size-spacing-05); /* 16px */
+  background: var(--ga-color-surface-primary);
+  border-bottom: var(--ga-border-width-sm) solid var(--ga-color-border-disabled);
+}
+
+.sub-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-02); /* 4px */
+}
+
+/* ===== segment-control =====
+   Gaia Mobile Figma node 1093:24211. iOS-style segmented selector.
+   Container is 44px tall (= 40px visual item + 2px×2 padding extending touch target). */
+
+.segment-control {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-01);              /* 2px */
+  height: 44px;
+  padding: var(--ga-size-spacing-01);          /* 2px */
+  background: var(--ga-color-surface-page);
+  border: var(--ga-border-width-sm) solid var(--ga-color-border-primary);
+  border-radius: var(--ga-radius-default);
+}
+
+.segment-control-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: var(--ga-size-spacing-03) var(--ga-size-spacing-05); /* 8px / 16px — text type */
+  background: transparent;
+  border: var(--ga-border-width-sm) solid transparent;
+  border-radius: var(--ga-radius-default);
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-md-size);
+  line-height: var(--ga-text-md-lineheight);
+  font-weight: var(--ga-font-weight-normal);
+  letter-spacing: var(--ga-text-md-letterspacing);
+  color: var(--ga-color-text-action);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pressed state — `:hover` and `:active` map to RN `pressed`.
+   Per the g-m spec, the Figma `hover` and `pressed` variants are visually identical. */
+.segment-control-item:not(.is-selected):hover,
+.segment-control-item:not(.is-selected):active {
+  background: var(--ga-color-surface-action-hover-2);
+  border-color: var(--ga-color-border-action);
+  color: var(--ga-color-text-action-hover);
+}
+
+.segment-control-item.is-selected {
+  background: var(--ga-color-surface-primary);
+  border-color: var(--ga-color-border-action);
+  color: var(--ga-color-text-action);
+}
+
+/* Already-selected items show no press feedback; their interaction is
+   "scroll content to top" (see gaia-ds-mobile skill). */
+
+.segment-control-item:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -2px;
+}
+
+/* ===== bottom-nav =====
+   Gaia Mobile Figma node 2243:5218 (manager-current / integration=hrm / elements=4).
+   Floats above the content area; width is determined by items + gaps + padding
+   (NOT stretched to screen width). Centered horizontally above the home indicator. */
+
+.bottom-nav {
+  position: absolute;
+  bottom: 50px;                       /* 34px home indicator + 16px breathing room */
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-04);              /* 12px between items */
+  padding: var(--ga-size-spacing-02);          /* 4px */
+  background: var(--ga-color-surface-disabled); /* #e2e4e9 */
+  border-radius: var(--ga-radius-default);
+  box-shadow:
+    0 0 3px rgba(19, 52, 69, 0.10),
+    0 0 5px rgba(19, 52, 69, 0.09),
+    0 0 7px rgba(19, 52, 69, 0.05),
+    0 10.5px 8px rgba(19, 52, 69, 0.01);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ga-size-spacing-01);                                 /* 2px */
+  height: 56px;
+  padding: var(--ga-size-spacing-02) var(--ga-size-spacing-04);   /* 4px / 12px */
+  background: transparent;
+  border: none;
+  border-radius: var(--ga-radius-default);
+  color: var(--ga-color-text-action);
+  font-family: var(--ga-font-family-primary);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-item.is-selected {
+  background: var(--ga-color-surface-primary);  /* white pill */
+}
+
+/* Press feedback — mirror the selected white pill on press
+   (prototype-only; Gaia spec doesn't document a press state).
+   Label weight does NOT change on press — semibold remains a selection-only signal. */
+.bottom-nav-item:not(.is-selected):hover,
+.bottom-nav-item:not(.is-selected):active {
+  background: var(--ga-color-surface-primary);
+}
+
+.bottom-nav-item:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -2px;
+}
+
+.bottom-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ga-size-spacing-02) var(--ga-size-spacing-03);   /* 4px / 8px */
+}
+
+.bottom-nav-icon svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.bottom-nav-label {
+  font-size: var(--ga-text-sm-size);                   /* 12px */
+  line-height: var(--ga-text-sm-lineheight);           /* 20px */
+  font-weight: var(--ga-font-weight-normal);           /* 400 — default */
+  letter-spacing: var(--ga-text-sm-letterspacing);     /* 0 */
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bottom-nav-item.is-selected .bottom-nav-label {
+  font-weight: var(--ga-font-weight-semibold);         /* 600 */
+}
+
+/* ===== quick-filter =====
+   Gaia Mobile Figma node 3090:8440 ("quick-filter").
+   Pill-shaped filter chip. Internal layout: optional check icon + label +
+   keyline + x icon. States: inactive (default) / active / disabled /
+   inactive-pressed / active-pressed (Figma "hover" = pressed on mobile). */
+
+.quick-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-03);                  /* 8px */
+  padding: 0 var(--ga-size-spacing-05) var(--ga-size-spacing-03); /* 16px L/R, 8px below */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.quick-filter-row::-webkit-scrollbar { display: none; }
+
+.quick-filter-label {
+  flex-shrink: 0;
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-sm-size);                /* 12px — matches pill labels */
+  line-height: 16px;                                /* component-specific override (matches pill labels) */
+  font-weight: var(--ga-font-weight-normal);        /* 400 — matches pill labels */
+  letter-spacing: var(--ga-text-sm-letterspacing);
+  color: var(--ga-color-text-action);
+}
+
+.quick-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-03);                  /* 8px */
+  padding: var(--ga-size-spacing-03) var(--ga-size-spacing-04); /* 8px V / 12px H */
+  background: var(--ga-color-surface-primary);
+  border: var(--ga-border-width-sm) solid var(--ga-color-border-tertiary);
+  border-radius: var(--ga-radius-round);
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-sm-size);                /* 12px */
+  line-height: 16px;                                /* component-specific override (matches Figma) */
+  font-weight: var(--ga-font-weight-normal);        /* 400 */
+  letter-spacing: var(--ga-text-sm-letterspacing);
+  color: var(--ga-color-text-action);
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.quick-filter-left {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-03);                  /* 8px */
+  flex-shrink: 0;
+}
+
+.quick-filter-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  /* Hidden from layout when inactive — pill shrinks to label-only width.
+     The flex gap on .quick-filter-left collapses too since gap only applies
+     between visible flex items. */
+  display: none;
+}
+
+.quick-filter.is-active .quick-filter-icon {
+  display: block;
+}
+
+/* Active */
+.quick-filter.is-active {
+  background: var(--ga-color-utility-blue-accent);
+  border-color: var(--ga-color-utility-blue);
+}
+
+/* Pressed — :hover / :active map to RN pressed. Both pressed states share the
+   same hover-border color; active state keeps its blue-accent background. */
+.quick-filter:not(:disabled):hover,
+.quick-filter:not(:disabled):active {
+  border-color: var(--ga-color-border-action-hover);
+}
+
+/* Disabled */
+.quick-filter:disabled {
+  background: var(--ga-color-surface-disabled);
+  border-color: var(--ga-color-border-disabled);
+  color: var(--ga-color-text-on-disabled);
+  cursor: not-allowed;
+}
+
+.quick-filter:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: 2px;
+}
+
+/* ===== menu (Gaia menu container) =====
+   Same surface/border/shadow as the Gaia web menu component. Anchored under
+   the trigger via a `.menu-wrapper` (position: relative). */
+
+.menu-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + var(--ga-size-spacing-02));   /* 4px below trigger */
+  right: 0;
+  z-index: 10;
+  min-width: 200px;
+  max-width: 320px;
+  padding: var(--ga-size-spacing-02);              /* 4px */
+  background: var(--ga-color-surface-primary);
+  border: var(--ga-border-width-sm) solid var(--ga-color-border-tertiary);
+  border-radius: var(--ga-radius-default);
+  box-shadow:
+    0 4px 8px rgba(19, 52, 69, 0.10),
+    0 15px 15px rgba(19, 52, 69, 0.09),
+    0 34px 21px rgba(19, 52, 69, 0.05),
+    0 61px 24px rgba(19, 52, 69, 0.01);
+}
+
+.menu[hidden] { display: none; }
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-size-spacing-03);                  /* 8px */
+  width: 100%;
+  min-height: 44px;                                /* mobile touch-target minimum */
+  padding: var(--ga-size-spacing-03) var(--ga-size-spacing-04); /* 8px / 12px */
+  border: none;
+  background: transparent;
+  border-radius: var(--ga-radius-default);
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-md-size);                /* 14px */
+  line-height: var(--ga-text-md-lineheight);        /* 20px */
+  font-weight: var(--ga-font-weight-medium);        /* 500 */
+  letter-spacing: var(--ga-text-md-letterspacing);
+  color: var(--ga-color-text-action);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-item:hover,
+.menu-item:active {
+  background: var(--ga-color-surface-action-hover-2);
+  color: var(--ga-color-text-action-hover);
+}
+
+.menu-item:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -2px;
+}
+
+.menu-item-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== checkbox =====
+   Gaia Mobile Figma node 2859:65337. 24×24, 6px radius. Two types currently
+   wired in the prototype: unchecked-default and checked-default. */
+
+.checkbox {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: var(--ga-border-width-md) solid var(--ga-color-border-action);
+  background: var(--ga-color-surface-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ga-color-surface-primary);          /* check stroke color */
+}
+
+.checkbox-icon {
+  width: 16px;
+  height: 16px;
+  display: none;
+}
+
+.checkbox.is-checked {
+  background: var(--ga-color-surface-action);
+  border-color: var(--ga-color-surface-action);
+}
+
+.checkbox.is-checked .checkbox-icon {
+  display: block;
+}
+
+/* ===== empman-list-item / dottie-list-item =====
+   Project-specific row components. Both compose the Gaia Mobile list-item spec
+   (Figma node 1744:44621, state=default) and currently share styling via grouping
+   selectors. Diverge by adding rules under just one selector when needed.
+
+   Avatar policy (design rule):
+   - empman-list-item:  initials only — NO image avatars. Use Avatar Type=initial.
+   - dottie-list-item:  full avatar fallback chain — may use Type=image, initial,
+                        or icon. Different rows can have different types. */
+
+.empman-list-item,
+.dottie-list-item {
+  /* Grid layout: avatar on the left (spans both rows), name on row 1,
+     secondary text (role) on row 2. */
+  display: grid;
+  grid-template-columns: auto 1fr;               /* avatar | text */
+  grid-template-rows: auto auto;
+  column-gap: var(--ga-size-spacing-03);          /* 8px */
+  width: 100%;
+  min-height: 64px;
+  padding: var(--ga-size-spacing-04) var(--ga-size-spacing-05); /* 12px V / 16px H */
+  background: var(--ga-color-surface-primary);
+  border: var(--ga-border-width-sm) solid var(--ga-color-border-disabled);
+  border-radius: var(--ga-radius-default);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The .list-item-left / .list-item-text wrappers stay in the markup (matching
+   the Gaia spec's structural names) but are made transparent to the grid via
+   `display: contents`. Their children become direct grid items. */
+.list-item-left,
+.list-item-text {
+  display: contents;
+}
+
+/* Pressed state — per Figma node 1744:44817 (state=pressed): peach bg + teal border. */
+.empman-list-item:hover,
+.empman-list-item:active,
+.dottie-list-item:hover,
+.dottie-list-item:active {
+  background: var(--ga-color-surface-action-hover-2);
+  border-color: var(--ga-color-border-action);
+}
+
+.empman-list-item:focus-visible,
+.dottie-list-item:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -2px;
+}
+
+.list-item-avatar {
+  /* Gaia Avatar — Size=small (24px). Container is shared by all 3 types.
+     Source: Gaia UI Kit (web), file VGt3AnEd4XW1B49hdkYaxl, node 2562:4089.
+     `--border/tertiary` in Figma (#cccfd7) = gaia-ds `--ga-color-border-disabled`.
+     Grid placement: column 1, spans both rows; vertically centered across the row. */
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ga-color-surface-primary);
+  border: var(--ga-border-width-sm) solid var(--ga-color-border-disabled);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Type=initial — Caption/Bold initials. Line-height 16px (not the 20px sm default —
+   the avatar-initials context tightens it so 12px text sits comfortably in 24px). */
+.list-item-avatar-initials {
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-sm-size);
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--ga-color-text-headings);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Type=image */
+.list-item-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Type=icon — fallback when neither image nor initials available */
+.list-item-avatar-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--ga-color-text-body);
+}
+
+.list-item-primary {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;                                   /* required for ellipsis in grid */
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-md-size);
+  line-height: var(--ga-text-md-lineheight);
+  font-weight: var(--ga-font-weight-normal);
+  letter-spacing: var(--ga-text-md-letterspacing);
+  color: var(--ga-color-text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-item-secondary {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-sm-size);
+  line-height: var(--ga-text-sm-lineheight);
+  font-weight: var(--ga-font-weight-normal);
+  letter-spacing: var(--ga-text-sm-letterspacing);
+  color: var(--ga-color-text-body-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ===== list-section + list-group =====
+   Convenience wrappers for stacking list-items in a section.
+   list-section-header is a temporary placeholder style — replace with the real
+   section-header Gaia component when that spec is supplied. */
+
+.list-section {
+  margin: 0 0 var(--ga-size-spacing-06); /* 24px between sections */
+}
+
+.list-section-header {
+  /* PLACEHOLDER style — not Gaia spec. Replace with real header component. */
+  font-family: var(--ga-font-family-primary);
+  font-size: var(--ga-text-md-size);
+  line-height: var(--ga-text-md-lineheight);
+  font-weight: var(--ga-font-weight-medium);
+  color: var(--ga-color-text-body);
+  margin: 0 0 var(--ga-size-spacing-03);
+  padding: 0 var(--ga-size-spacing-05);
+}
+
+/* List wrappers — empman-list and dottie-list compose this shared layout.
+   Diverge per-component when needed (different gap, padding, etc.). */
+.empman-list,
+.dottie-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-size-spacing-02);                /* 4px between rows */
+  padding: 0 var(--ga-size-spacing-05);          /* 16px L/R */
+}
