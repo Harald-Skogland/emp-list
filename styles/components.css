@@ -65,17 +65,27 @@
 /* Pressed state. Per gaia-ds-mobile interaction model, :hover on desktop is
    mapped to RN's `pressed` state so reviewers preview touch feedback without
    holding click. Visual mirrors the gaia-ds web button-icon "secondary" hover
-   styling — confirm whether the mobile spec defines a different press style.
-   When the button is a menu trigger with its menu open (aria-expanded=true),
-   it stays in this same active styling so the trigger reflects menu state. */
+   styling — confirm whether the mobile spec defines a different press style. */
 .button-icon:hover,
-.button-icon:active,
-.button-icon[aria-haspopup="true"][aria-expanded="true"] {
+.button-icon:active {
   background: var(--ga-color-surface-action-hover-2);
   color: var(--ga-color-text-action-hover);
 }
 
 .button-icon:focus-visible {
+  outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
+  outline-offset: -3px;
+}
+
+/* Menu-trigger active state: when the popup is open (aria-expanded=true) the
+   button shows the Gaia "focused" visual (Figma node 1078:20779) — white bg
+   with a 2px --ga-color-border-focus outline inset -3px. Overrides hover so
+   the peach press feedback doesn't appear while the menu is held open. */
+.button-icon[aria-haspopup="true"][aria-expanded="true"],
+.button-icon[aria-haspopup="true"][aria-expanded="true"]:hover,
+.button-icon[aria-haspopup="true"][aria-expanded="true"]:active {
+  background: var(--ga-color-surface-primary);
+  color: var(--ga-color-text-action);
   outline: var(--ga-border-width-md) solid var(--ga-color-border-focus);
   outline-offset: -3px;
 }
